@@ -14,6 +14,7 @@ namespace ProyectoIA202201
     public partial class Form1 : Form
     {
         CargueArchivoService cargueService;
+        CargarArchivoResponse response = new CargarArchivoResponse();
         public Form1()
         {
             InitializeComponent();
@@ -40,19 +41,23 @@ namespace ProyectoIA202201
 
         private void button2_Click(object sender, EventArgs e)
         {
-            var respuesta = cargueService.CargarArchivo(file);
+            var response = cargueService.CargarArchivo(file);
 
             MessageBoxButtons botones = MessageBoxButtons.YesNo;
-            if (!respuesta.Error)
+            if (!response.Error)
             {
 
                 DialogResult resultadoForm = MessageBox.Show("Los datos del archivo fueron cargado correctamente, ¿Desea continuar?", "Mensaje Informativo", botones, MessageBoxIcon.Question );
                 if (resultadoForm == DialogResult.Yes)
                 {
                     //this.Close();
-                    FormConfiguracionDeRed formConfirgurarRed = new FormConfiguracionDeRed();
+                    FormConfiguracionDeRed formConfirgurarRed = new FormConfiguracionDeRed(response);
                     formConfirgurarRed.Show();
-                    
+
+                }
+                else
+                {
+                    Application.Exit();
                 }
             }
             

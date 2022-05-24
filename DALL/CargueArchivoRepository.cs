@@ -9,10 +9,18 @@ using ENTITY;
 namespace DALL
 {
     public class CargueArchivoRepository
-    {
+    { 
         Parametros parametros = new Parametros();
         List<Patrones> patrones = new List<Patrones>();
-
+        StreamWriter sw ;
+        public CargueArchivoRepository(StreamWriter sw2)
+        {
+            sw = sw2;
+        }
+        public CargueArchivoRepository()
+        {
+            
+        }
         public List<Patrones> CargarDatos(string fileName)
         {
             
@@ -137,5 +145,453 @@ namespace DALL
 
         }
 
+        //multicapa
+        public void PesosYUmbralesMulticapa (int numI, int numJ)
+        {
+            bool signo = true;
+            var random = new Random();
+            double[,] matrizPesos = new double[numI, numJ];
+            double[] vectorUmbral = new double[numJ];
+            for (int i = 0; i < numI; i++)
+            {
+                for (int j = 0; j < numJ; j++)
+                {
+                    if (signo)
+                    {
+                        matrizPesos[i, j] = Math.Round(random.NextDouble(), 1);
+                        signo = false;
+                    }
+                    else
+                    {
+                        double num = Math.Round(random.NextDouble(), 1);
+                        matrizPesos[i, j] = num - (num * 2);
+                        signo = true;
+                    }
+
+                }
+            }
+
+            for (int i = 0; i < numJ; i++)
+            {
+                if (signo)
+                {
+                    vectorUmbral[i] = Math.Round(random.NextDouble(), 1);
+                    signo = false;
+                }
+                else
+                {
+                    double num = Math.Round(random.NextDouble(), 1);
+                    vectorUmbral[i] = num - (num * 2);
+                    signo = true;
+                }
+            }
+            Console.WriteLine(matrizPesos);
+            Console.WriteLine(vectorUmbral);
+            WriteFileMulticapa(matrizPesos, vectorUmbral, numJ, numI);
+        }
+
+        public void WriteFileMulticapa(double[,] matriz, double[] vector, int numOutputs, int numInputs)
+        {
+            WriteMatrizFileMulticapa(matriz, numOutputs, numInputs);
+            WriteVectorFileMulticapa(vector, numOutputs);
+        }
+        public void WriteMatrizFileMulticapa(double[,] matriz, int numOutputs, int numInputs)
+        {
+            sw.WriteLine("");
+            sw.WriteLine("Matriz de pesos");
+            for (int i = 0; i < numInputs; i++)
+            {
+                string line = "";
+                for (int j = 0; j < numOutputs; j++)
+                {
+                    line = line + matriz[i, j].ToString() + " ;";
+                }
+                sw.WriteLine(line);
+            }
+        }
+        public void WriteVectorFileMulticapa(double[] vector, int numInputs)
+        {
+            sw.WriteLine("");
+            sw.WriteLine("Vector de umbrales");
+            for (int i = 0; i < numInputs; i++)
+            {
+                sw.WriteLine(vector[i]);
+            }
+        }
+
+
+        //Unicapa
+        public void Unicapa(int numInputs, int numOutputs)
+        {
+            bool signo = true;
+            var random = new Random();
+            double[,] matrizPesos = new double[numInputs, numOutputs];
+            double[] vectorUmbral = new double[numOutputs];
+            for (int i = 0; i < numInputs; i++)
+            {
+                for (int j = 0; j < numOutputs; j++)
+                {
+                    if (signo)
+                    {
+                        matrizPesos[i, j] = Math.Round(random.NextDouble(), 1);
+                        signo = false;
+                    }
+                    else
+                    {
+                        double num = Math.Round(random.NextDouble(), 1);
+                        matrizPesos[i, j] = num - (num * 2);
+                        signo = true;
+                    }
+
+                }
+            }
+
+            for (int i = 0; i < numOutputs; i++)
+            {
+                if (signo)
+                {
+                    vectorUmbral[i] = Math.Round(random.NextDouble(), 1);
+                    signo = false;
+                }
+                else
+                {
+                    double num = Math.Round(random.NextDouble(), 1);
+                    vectorUmbral[i] = num - (num * 2);
+                    signo = true;
+                }
+            }
+            Console.WriteLine(matrizPesos);
+            Console.WriteLine(vectorUmbral);
+            WriteFileUnicapa(matrizPesos, vectorUmbral, numOutputs, numInputs);
+        }
+        public void WriteVectorFileUnicapa(double[] vector, int numOutputs)
+        {
+            sw.WriteLine("");
+            sw.WriteLine("Vector de umbrales");
+            for (int i = 0; i < numOutputs; i++)
+            {
+                sw.WriteLine(vector[i]);
+            }
+        }
+
+        public void WriteMatrizFileUnicapa(double[,] matriz, int numOutputs, int numInputs)
+        {
+            sw.WriteLine("");
+            sw.WriteLine("Matriz de pesos");
+            for (int i = 0; i < numInputs; i++)
+            {
+                string line = "";
+                for (int j = 0; j < numOutputs; j++)
+                {
+                    line = line + matriz[i, j].ToString() + " ;";
+                }
+                sw.WriteLine(line);
+            }
+        }
+
+
+        public void WriteFileUnicapa(double[,] matriz, double[] vector, int numOutputs, int numInputs)
+        {
+            WriteMatrizFileUnicapa(matriz, numOutputs, numInputs);
+            WriteVectorFileUnicapa(vector, numOutputs);
+            sw.Close();
+        }
+
+        public void CloseFile()
+        {
+            sw.Close();
+            sw.Dispose();
+        }
+
+
+
+
+
+
     }
+
+    
+
 }
+
+/*
+ public class RepositoryLearningAlgorithm
+  {
+      Parameters parameters = new Parameters();
+      List<Pattern> patterns = new List<Pattern>();
+      StreamWriter sw = new StreamWriter("C:\\Users\\deyner solano\\Documents\\Texto.txt");
+
+      public void initializeWeightsAndThresholdsMulticapa(int numI, int numJ)
+      {
+          bool signo = true;
+          var random = new Random();
+          double[,] matrizPesos = new double[numI, numJ];
+          double[] vectorUmbral = new double[numJ];
+          for (int i = 0; i < numI; i++)
+          {
+              for (int j = 0; j < numJ; j++)
+              {
+                  if (signo)
+                  {
+                      matrizPesos[i, j] = Math.Round(random.NextDouble(), 1);
+                      signo = false;
+                  }
+                  else
+                  {
+                      double num = Math.Round(random.NextDouble(), 1);
+                      matrizPesos[i, j] = num - (num * 2);
+                      signo = true;
+                  }
+
+              }
+          }
+
+          for (int i = 0; i < numJ; i++)
+          {
+              if (signo)
+              {
+                  vectorUmbral[i] = Math.Round(random.NextDouble(), 1);
+                  signo = false;
+              }
+              else
+              {
+                  double num = Math.Round(random.NextDouble(), 1);
+                  vectorUmbral[i] = num - (num * 2);
+                  signo = true;
+              }
+          }
+          Console.WriteLine(matrizPesos);
+          Console.WriteLine(vectorUmbral);
+          WriteFileMulticapa(matrizPesos, vectorUmbral, numJ, numI);
+      }
+      public void WriteVectorFileMulticapa(double[] vector, int numInputs)
+      {
+          sw.WriteLine("");
+          sw.WriteLine("Vector de umbrales");
+          for (int i = 0; i < numInputs; i++)
+          {
+              sw.WriteLine(vector[i]);
+          }
+      }
+
+      public void WriteMatrizFileMulticapa(double[,] matriz, int numOutputs, int numInputs)
+      {
+          sw.WriteLine("");
+          sw.WriteLine("Matriz de pesos");
+          for (int i = 0; i < numInputs; i++)
+          {
+              string line = "";
+              for (int j = 0; j < numOutputs; j++)
+              {
+                  line = line + matriz[i, j].ToString() + " ;";
+              }
+              sw.WriteLine(line);
+          }
+      }
+
+      public void WriteFileMulticapa(double[,] matriz, double[] vector, int numOutputs, int numInputs)
+      {
+          WriteMatrizFileMulticapa(matriz, numOutputs, numInputs);
+          WriteVectorFileMulticapa(vector, numOutputs);
+      }
+
+      public void CloseFile()
+      {
+          sw.Close();
+          sw.Dispose();
+      }
+
+      //******************Unicapa********************
+
+
+      public void   Unicapa(int numInputs, int numOutputs)
+      {
+          bool signo = true;
+          var random = new Random();
+          double[,] matrizPesos = new double[numInputs, numOutputs];
+          double[] vectorUmbral = new double[numOutputs];
+          for (int i = 0; i < numInputs; i++)
+          {
+              for(int j = 0; j < numOutputs; j++)
+              {
+                  if (signo)
+                  {
+                      matrizPesos[i, j] = Math.Round(random.NextDouble(),1);
+                      signo = false;
+                  }
+                  else
+                  {
+                      double num = Math.Round(random.NextDouble(), 1);
+                      matrizPesos[i, j] = num - (num*2);
+                      signo = true;
+                  }
+
+              }
+          }
+
+          for(int i = 0; i < numOutputs; i++)
+          {
+              if (signo)
+              {
+                  vectorUmbral[i] = Math.Round(random.NextDouble(), 1);
+                  signo = false;
+              }
+              else
+              {
+                  double num = Math.Round(random.NextDouble(), 1);
+                  vectorUmbral[i] = num - (num * 2);
+                  signo = true;
+              }
+          }
+          Console.WriteLine(matrizPesos);
+          Console.WriteLine(vectorUmbral);
+          WriteFileUnicapa(matrizPesos, vectorUmbral, numOutputs, numInputs);
+      }
+      public void WriteVectorFileUnicapa(double[] vector,int numOutputs)
+      {
+          sw.WriteLine("");
+          sw.WriteLine("Vector de umbrales");
+          for (int i = 0; i < numOutputs; i++)
+          {
+              sw.WriteLine(vector[i]);
+          }
+      }
+
+      public void WriteMatrizFileUnicapa(double[,] matriz, int numOutputs, int numInputs)
+      {
+          sw.WriteLine("");
+          sw.WriteLine("Matriz de pesos");
+          for (int i = 0; i < numInputs; i++)
+          {
+              string line = "";
+              for (int j = 0; j < numOutputs; j++)
+              {
+                  line = line + matriz[i, j].ToString() + " ;";
+              }
+              sw.WriteLine(line);
+          }
+      }
+
+
+      public void WriteFileUnicapa(double[,] matriz, double[] vector, int numOutputs, int numInputs)
+      {
+          WriteMatrizFileUnicapa(matriz, numOutputs, numInputs);
+          WriteVectorFileUnicapa(vector, numOutputs);
+          sw.Close();
+      }
+
+      public ReadFileResponse ReadFile(string fileName)
+      {
+          ReadFileResponse response = new ReadFileResponse();
+          FileStream file = new FileStream(fileName, FileMode.OpenOrCreate, FileAccess.Read);
+          StreamReader reader = new StreamReader(file);
+          string line = string.Empty;
+          int position = 0;
+          parameters.Patterns = 0;
+          while ((line = reader.ReadLine()) != null)
+          {
+              if (position == 0)
+              {
+                  ReadNameParameters(line);
+              }
+              else
+              {
+                  MapPatterns(line);
+                  parameters.Patterns++;
+              }
+              position++;
+          }
+          reader.Close();
+          file.Close();
+          response.Patterns = patterns;
+          response.Parameters = parameters;
+          return response;
+
+          Console.WriteLine(parameters);
+          Console.WriteLine(patterns);
+      }
+
+      private void MapPatterns(string line)
+      {
+          int positionInput = 0;
+          int positionOutput = 0;
+          char delimeter = ';';
+          string[] vectorParameters = line.Split(delimeter);
+          Pattern pattern = new Pattern();
+
+          List<Input> listInputsValue = new List<Input>();
+          List<Output> listOutputValue = new List<Output>();
+
+          for (int i = 0; i < vectorParameters.Length; i++)
+          {
+              Input input = new Input();
+              Output output = new Output();
+
+              if (parameters.Inputs > i)
+              {
+                  input.Value = int.Parse(vectorParameters[i]);
+                  input.Position = positionInput;
+                  positionInput++;
+
+                  listInputsValue.Add(input);
+              }
+              else
+              {
+                  output.Value = int.Parse(vectorParameters[i]);
+                  output.Position = positionOutput;
+                  positionOutput++;
+
+                  listOutputValue.Add(output);
+              }
+          }
+          pattern.Inputs = listInputsValue;
+          pattern.Outputs = listOutputValue;
+          patterns.Add(pattern);
+      }
+
+
+      private void ReadNameParameters(string line)
+      {
+          parameters.Inputs = 0;
+          parameters.Outputs = 0;
+
+          Pattern pattern = new Pattern();
+          List<Input> listInputsValue = new List<Input>();
+          List<Output> listOutputValue = new List<Output>();
+
+      char delimeter = ';';
+          string[] vectorParameters = line.Split(delimeter);
+          for (int i = 0; i < vectorParameters.Length; i++)
+          {
+              if (vectorParameters[i].Contains("x") || vectorParameters[i].Contains("X"))
+              {
+                  Input input = new Input();
+                  input.NameParameter = (vectorParameters[i]);
+                  input.Position = parameters.Inputs;
+                  parameters.Inputs++;
+
+                  listInputsValue.Add(input);
+              }
+              if (vectorParameters[i].Contains("y") || vectorParameters[i].Contains("Y"))
+              {
+                  Output output = new Output();
+                  output.NameParameter = (vectorParameters[i]);
+                  output.Position = parameters.Outputs;
+                  parameters.Outputs++;
+
+                  listOutputValue.Add(output);
+              }
+          }
+          pattern.Inputs = listInputsValue;
+          pattern.Outputs = listOutputValue;
+          patterns.Add(pattern);
+
+      }
+
+  }
+
+  public class ReadFileResponse
+  {
+      public List<Pattern> Patterns { get; set; }
+      public Parameters Parameters { get; set; }
+  }*/
